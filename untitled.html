@@ -1,0 +1,86 @@
+<?php
+/*
+VERSION TEST --> version fonctionnelle = accueil-working.php
+TODO
+- une seule boucle pour les 3 colonnes
+- scanne tous les articles et leur catégorie
+- qd chg de cat, ferme la div colN
+- rouvre la div colN+1 et affiche les articles
+- colN où N= id_col
+
+*/
+// définition de la requête dans une var
+    global $connect;
+    $sql = "SELECT id_articles, id_categories, titre, abstract, auteur, DATE_FORMAT(date, '%d %m %Y') AS date_fr
+            FROM articles JOIN categories
+            ON articles.id_cat = categories.id_categories
+            ORDER BY date DESC";
+
+    echo $sql;  // echo requête pour debug --> comparer avec le msg d'erreur
+
+    $col = $connect->query($sql);   // col contient l'identifiant de la requête. L'objet $connect est dispo car config.php est chargée avant
+    echo $connect->error;           // affiche l'erreur s'il y en a une
+    //return $col;                  // fct renvoie $ col
+
+    while($article = $col->fetch_object()):
+      $flag = "none";
+    if(id_cat != $flag):
+    myPrint_r($col); // pour débug
+
+  endwhile; endif;
+?>
+<div id="col1">
+  <h1>Economie</h1>
+  <!-- démarre boucle php -->
+  <div class="article">
+  <!-- titre php -->
+    <h1><?php echo $article->titre; ?></h1>
+    <!-- date php -->
+    <p class="date"><?php echo $article->date_fr; ?></p>
+    <p>
+    <!-- extrait php -->
+      <?php echo $article->abstract; ?>
+      <!-- rechargement de la page avec l'article correspondant en param d'URL pour le controller -->
+      <a href="index.php?id_articles=<?php echo $article->id_articles ?>" class="plus">&gt;&gt;&gt;</a>
+      </p>
+    <p class="signature"><?php echo $article->auteur; ?></p>
+  </div>
+  <br>
+</div>
+
+<div id="col2">
+  <h1>Social</h1>
+  <?php
+    $col2 = request("Social");
+    if ($col2->num_rows > 0) :
+      while($article = $col2->fetch_object()) :
+  ?>
+  <div class="article">
+    <h1><?php echo $article->titre; ?></h1>
+    <p class="date"><?php echo $article->date_fr; ?></p>
+    <p>
+      <?php echo $article->abstract; ?>
+      <a href="index.php?id_articles=<?php echo $article->id_articles ?>" class="plus">&gt;&gt;&gt;</a>
+    </p>
+    <p class="signature"><?php echo $article->auteur; ?><br></p>
+  </div>
+  <?php endwhile; endif; ?>
+</div>
+
+<div id="col3">
+  <h1>Sport</h1>
+  <?php
+    $col3 = request("Sport");
+    if($col3->num_rows > 0) :
+      while($article = $col3->fetch_object()) :
+   ?>
+  <div class="article">
+    <h1><?php echo $article->titre; ?></h1>
+    <p class="date"><?php echo $article->date_fr; ?></p>
+    <p>
+      <?php echo $article->abstract; ?>
+      <a href="index.php?id_articles=<?php echo $article->id_articles ?>" class="plus">&gt;&gt;&gt;</a>
+    </p>
+    <p class="signature"><?php echo $article->auteur; ?><br></p>
+  </div>
+  <?php endwhile; endif; ?>
